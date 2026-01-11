@@ -1,0 +1,79 @@
+* Doom Emacs Commands Reference
+Most common commands I use in my workflow.
+
+** File Navigation
+| Keybinding | Action                     |
+|------------+----------------------------|
+| SPC f f    | Find file (anywhere)       |
+| SPC SPC    | Find file in project       |
+| SPC s p    | Search text in project     |
+| SPC p p    | Switch project             |
+
+** Terminal
+| Keybinding | Action                     |
+|------------+----------------------------|
+| SPC o t    | Toggle popup terminal      |
+| SPC o T    | Terminal in current buffer |
+
+** Errors
+| Keybinding | Action             |
+|------------+--------------------|
+| SPC c x    | List project errors|
+| ] e        | Next error         |
+| [ e        | Previous error     |
+
+** Window Splits
+| Keybinding   | Action              |
+|--------------+---------------------|
+| SPC w v      | Vertical split      |
+| SPC w s      | Horizontal split    |
+| SPC w d      | Close split         |
+| SPC w h/j/k/l| Navigate splits     |
+| C-w h/j/k/l  | Navigate splits (alt)|
+
+** Formatting
+| Keybinding | Action                   |
+|------------+--------------------------|
+| SPC t f    | Toggle format-on-save    |
+| SPC c f    | Format buffer/region     |
+
+** Saving
+| Keybinding | Action      |
+|------------+-------------|
+| C-s        | Save buffer |
+| :w RET     | Save (vim)  |
+
+** Treemacs (File Tree)
+| Keybinding | Action                 |
+|------------+------------------------|
+| SPC o p    | Toggle treemacs        |
+| c f        | Create file            |
+| c d        | Create directory       |
+| d          | Delete                 |
+| R          | Rename                 |
+| RET        | Open file              |
+| q          | Close treemacs         |
+| u          | Go to parent node      |
+| H          | Set root to parent dir |
+| b          | Go back                |
+| P r        | Select new root        |
+
+** Buffer Navigation
+| Keybinding | Action                  |
+|------------+-------------------------|
+| SPC b b    | Switch buffer           |
+| SPC b n    | Next buffer             |
+| SPC b p    | Previous buffer         |
+| SPC b d    | Kill buffer             |
+| SPC b B    | Switch buffer (all)     |
+| SPC ,      | Switch workspace buffer |
+
+** General
+| Keybinding | Action           |
+|------------+------------------|
+| SPC h k    | Describe keybind |
+| SPC h f    | Describe function|
+| SPC h v    | Describe variable|
+| SPC :      | Run command      |
+| M-x        | Run command      |
+| C-x C-c    | Quit Emacs       |

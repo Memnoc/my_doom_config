@@ -48,7 +48,23 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
+;; Color separation files for open terminals
+(setq window-divider-default-places t
+      window-divider-default-bottom-width 1
+      window-divider-default-right-width 1)
+(window-divider-mode +1)
 
+;; Set divider color (adjust to rose-pine palette or your preference)
+(custom-set-faces!
+  '(window-divider :foreground "#eb6f92")
+  '(window-divider-first-pixel :foreground "#eb6f92")
+  '(window-divider-last-pixel :foreground "#eb6f92"))
+;;
+;;
+;; Save with CTRL+s
+(map! "C-s" #'save-buffer)
+;;
+;;
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
