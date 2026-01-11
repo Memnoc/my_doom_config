@@ -53,4 +53,10 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
+;; Useful Packages
 (package! tldr)
+;; Themes
+;;
+;;Rose Pine
+;; (package! rose-pine-emacs
+;;   :recipe (:host github :repo "thongpv87/rose-pine-emacs"))
