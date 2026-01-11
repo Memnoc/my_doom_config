@@ -11,8 +11,8 @@
 
 ;; Window dividers (rose-pine rose accent)
 (setq window-divider-default-places t
-      window-divider-default-bottom-width 1
-      window-divider-default-right-width 1)
+      window-divider-default-bottom-width 3
+      window-divider-default-right-width 3)
 (window-divider-mode +1)
 (custom-set-faces!
   '(window-divider :foreground "#eb6f92")
@@ -27,6 +27,10 @@
 (map! :leader "e" #'+neotree/open)        ;; file tree
 (map! :leader "9" #'+vterm/toggle)        ;; floating terminal
 (map! :leader "q q" #'save-all-and-quit)  ;; save and quit
+(map! "C-h" #'evil-window-left
+      "C-j" #'evil-window-down
+      "C-k" #'evil-window-up
+      "C-l" #'evil-window-right)
 
 ;;; Neotree
 (after! neotree
