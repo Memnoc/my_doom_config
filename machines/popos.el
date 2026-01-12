@@ -67,8 +67,6 @@
 (map! :leader "c o" #'eglot-code-action-organize-imports)
 (map! :n "H" #'+workspace/switch-left
       :n "L" #'+workspace/switch-right)
-(map! :n "H" #'previous-buffer
-      :n "L" #'next-buffer)
 
 ;;; Neotree
 (after! neotree
