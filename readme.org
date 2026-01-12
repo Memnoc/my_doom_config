@@ -1,79 +1,190 @@
-* Doom Emacs Commands Reference
-Most common commands I use in my workflow.
+#+TITLE: Doom Emacs Configuration
+#+AUTHOR: Memnoc
+#+DESCRIPTION: Configuration reference and setup guide
 
-** File Navigation
-| Keybinding | Action                     |
-|------------+----------------------------|
-| SPC f f    | Find file (anywhere)       |
-| SPC SPC    | Find file in project       |
-| SPC s p    | Search text in project     |
-| SPC p p    | Switch project             |
+* Prerequisites
 
-** Terminal
-| Keybinding | Action                     |
-|------------+----------------------------|
-| SPC o t    | Toggle popup terminal      |
-| SPC o T    | Terminal in current buffer |
+** System Packages
+#+begin_src bash
+sudo pacman -S ttf-nerd-fonts-symbols shellcheck ttf-jetbrains-mono
+#+end_src
 
-** Errors
-| Keybinding | Action             |
-|------------+--------------------|
-| SPC c x    | List project errors|
-| ] e        | Next error         |
-| [ e        | Previous error     |
+** Shell Configuration
+Add to =.zshrc= or =.bashrc=:
+#+begin_src bash
+export PATH="$HOME/.config/emacs/bin:$PATH"
+#+end_src
 
-** Window Splits
-| Keybinding   | Action              |
-|--------------+---------------------|
-| SPC w v      | Vertical split      |
-| SPC w s      | Horizontal split    |
-| SPC w d      | Close split         |
-| SPC w h/j/k/l| Navigate splits     |
-| C-w h/j/k/l  | Navigate splits (alt)|
+** Theme Setup
+Download [[https://github.com/donniebreve/rose-pine-doom-emacs][rose-pine-doom-emacs]] and install:
+#+begin_src bash
+git clone https://github.com/donniebreve/rose-pine-doom-emacs.git
+cd rose-pine-doom-emacs
+make install
+#+end_src
 
-** Formatting
-| Keybinding | Action                   |
-|------------+--------------------------|
-| SPC t f    | Toggle format-on-save    |
-| SPC c f    | Format buffer/region     |
+* Directory Structure
 
-** Saving
-| Keybinding | Action      |
-|------------+-------------|
-| C-s        | Save buffer |
-| :w RET     | Save (vim)  |
+#+begin_example
+~/.config/doom/
+├── init.el
+├── config.el
+├── packages.el
+├── themes/
+│   └── doom-rose-pine-theme.el
+└── machines/
+    ├── macos.el
+    ├── popos.el
+    ├── arch-niri.el
+    └── arch-bspwm.el
+#+end_example
 
-** Treemacs (File Tree)
-| Keybinding | Action                 |
-|------------+------------------------|
-| SPC o p    | Toggle treemacs        |
-| c f        | Create file            |
-| c d        | Create directory       |
-| d          | Delete                 |
-| R          | Rename                 |
-| RET        | Open file              |
-| q          | Close treemacs         |
-| u          | Go to parent node      |
-| H          | Set root to parent dir |
-| b          | Go back                |
-| P r        | Select new root        |
-
-** Buffer Navigation
-| Keybinding | Action                  |
-|------------+-------------------------|
-| SPC b b    | Switch buffer           |
-| SPC b n    | Next buffer             |
-| SPC b p    | Previous buffer         |
-| SPC b d    | Kill buffer             |
-| SPC b B    | Switch buffer (all)     |
-| SPC ,      | Switch workspace buffer |
+* Keybindings
 
 ** General
-| Keybinding | Action           |
-|------------+------------------|
-| SPC h k    | Describe keybind |
-| SPC h f    | Describe function|
-| SPC h v    | Describe variable|
-| SPC :      | Run command      |
-| M-x        | Run command      |
-| C-x C-c    | Quit Emacs       |
+| Keybinding | Action              |
+|------------+---------------------|
+| C-s        | Save buffer         |
+| SPC e      | Open neotree        |
+| SPC 9      | Toggle terminal     |
+| SPC q q    | Save all and quit   |
+
+** Window Navigation
+| Keybinding   | Action               |
+|--------------+----------------------|
+| C-h          | Window left          |
+| C-j          | Window down          |
+| C-k          | Window up            |
+| C-l          | Window right         |
+| SPC w v      | Vertical split       |
+| SPC w s      | Horizontal split     |
+| SPC w d      | Close window         |
+
+** Workspace/Buffer
+| Keybinding | Action                  |
+|------------+-------------------------|
+| H          | Switch workspace left   |
+| L          | Switch workspace right  |
+| SPC b b    | Switch buffer           |
+| SPC b d    | Kill buffer             |
+| SPC ,      | Switch buffer (project) |
+
+** Code/LSP
+| Keybinding | Action            |
+|------------+-------------------|
+| SPC c a    | Code actions      |
+| SPC c q    | Quick fix         |
+| SPC c r    | Rewrite           |
+| SPC c o    | Organize imports  |
+| SPC c f    | Format buffer     |
+| SPC t f    | Toggle format     |
+| SPC d x    | Show diagnostics  |
+| ] e        | Next error        |
+| [ e        | Previous error    |
+
+** File Navigation
+| Keybinding | Action               |
+|------------+----------------------|
+| SPC SPC    | Find file in project |
+| SPC f f    | Find file anywhere   |
+| SPC s p    | Search in project    |
+| SPC p p    | Switch project       |
+
+** Neotree (inside neotree)
+| Key | Action                |
+|-----+-----------------------|
+| a   | Create file/directory |
+| d   | Delete                |
+| r   | Rename                |
+| U   | Go up directory       |
+| RET | Open file             |
+| q   | Close neotree         |
+
+* Config Sections
+
+** Identity
+Git/email identity. Leave commented if using global git config.
+#+begin_src elisp
+;; (setq user-full-name "Your Name"
+;;       user-mail-address "your@email.com")
+#+end_src
+
+** Banner
+Custom ASCII art dashboard with devil horns and MEMNOC text.
+
+** Appearance
+- Font: JetBrains Mono 15pt
+- Theme: doom-rose-pine
+- Line numbers: enabled
+- Window dividers: rose accent (#eb6f92)
+
+** Org
+Org directory set to =~/org/=.
+
+** OS Detection
+Automatically loads machine-specific config from =~/.config/doom/machines/= based on:
+- macOS: =macos.el=
+- Arch + Niri: =arch-niri.el=
+- Arch + BSPWM: =arch-bspwm.el=
+- Pop!_OS: =popos.el=
+
+* init.el Modules
+
+** Completion
+- corfu
+- vertico
+
+** UI
+- doom
+- doom-dashboard
+- neotree
+- tabs
+- workspaces
+- smooth-scroll
+- vc-gutter
+
+** Editor
+- evil +everywhere
+- format +onsave
+- multiple-cursors
+- snippets
+- whitespace
+
+** Terminal
+- vterm
+- eshell
+
+** Tools
+- lsp +eglot
+- magit
+- tree-sitter
+- pdf
+
+** Languages
+- cc +lsp
+- javascript +lsp
+- haskell +lsp
+- emacs-lisp
+- common-lisp
+- org
+- markdown
+- json
+- lua
+- sh
+- web
+
+* Maintenance
+
+** After Config Changes
+#+begin_src bash
+doom sync
+#+end_src
+Then restart Emacs.
+
+** Useful Commands
+| Command        | Action                    |
+|----------------+---------------------------|
+| doom sync      | Sync config and packages  |
+| doom upgrade   | Update Doom and packages  |
+| doom doctor    | Diagnose issues           |
+| doom env       | Snapshot shell env        |
