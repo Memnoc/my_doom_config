@@ -41,8 +41,8 @@
 
 ;; Window dividers (rose-pine rose accent)
 (setq window-divider-default-places t
-      window-divider-default-bottom-width 3
-      window-divider-default-right-width 3)
+      window-divider-default-bottom-width 1
+      window-divider-default-right-width 1)
 (window-divider-mode +1)
 (custom-set-faces!
   '(window-divider :foreground "#524f67")
