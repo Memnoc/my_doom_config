@@ -45,9 +45,33 @@
       window-divider-default-right-width 3)
 (window-divider-mode +1)
 (custom-set-faces!
-  '(window-divider :foreground "#eb6f92")
-  '(window-divider-first-pixel :foreground "#eb6f92")
-  '(window-divider-last-pixel :foreground "#eb6f92"))
+  '(window-divider :foreground "#524f67")
+  '(window-divider-first-pixel :foreground "#524f67")
+  '(window-divider-last-pixel :foreground "#524f67"))
+
+;; Yank flash effect
+(use-package! evil-goggles
+  :config
+  (evil-goggles-mode)
+  (setq evil-goggles-duration 0.2)
+  (custom-set-faces!
+    '(evil-goggles-yank-face :background "#eb6f92" :foreground "#191724")))
+
+;; Visual selection (rose-pine palette)
+(custom-set-faces!
+  ;; '(region :background "#524f67" :foreground "#e0def4")
+  ;; Iris (purple) selection
+  '(region :background "#c4a7e7" :foreground "#191724")
+
+  ;; Pine (teal) selection
+  ;; '(region :background "#31748f" :foreground "#e0def4")
+
+  ;; Rose (soft pink) selection
+  ;; '(region :background "#ebbcba" :foreground "#191724")
+
+  ;; Subtle overlay
+  ;; '(region :background "#26233a" :foreground "#e0def4")
+  )
 
 ;;; Org
 (setq org-directory "~/org/")
@@ -77,7 +101,8 @@
   (map! :map neotree-mode-map
         "a" #'neotree-create-node
         "d" #'neotree-delete-node
-        "r" #'neotree-rename-node))
+        "r" #'neotree-rename-node
+        "<backspace>" #'neotree-select-up-node))
 
 ;;; Functions
 (defun save-all-and-quit ()
