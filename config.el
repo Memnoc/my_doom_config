@@ -5,32 +5,34 @@
 ;;       user-mail-address "your@email.com")
 
 ;;; Banner
-(defun memnoc-doom-banner ()
-  (let* ((banner '("                _       _"
-                   "               ( \\     / )"
-                   "            __  \\ \\   / /  __"
-                   "           /  \\  \\ \\ / /  /  \\"
-                   "          / /\\ \\  \\ V /  / /\\ \\"
-                   "          \\_\\ \\_\\  \\_/  /_/ /_/"
-                   ""
-                   "   ███╗   ███╗███████╗███╗   ███╗███╗   ██╗ ██████╗  ██████╗"
-                   "   ████╗ ████║██╔════╝████╗ ████║████╗  ██║██╔═══██╗██╔════╝"
-                   "   ██╔████╔██║█████╗  ██╔████╔██║██╔██╗ ██║██║   ██║██║     "
-                   "   ██║╚██╔╝██║██╔══╝  ██║╚██╔╝██║██║╚████║██║   ██║██║     "
-                   "   ██║ ╚═╝ ██║███████╗██║ ╚═╝ ██║██║ ╚███║╚██████╔╝╚██████╗"
-                   "   ╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚══╝ ╚═════╝  ╚═════╝"
-                   ""
-                   "                    < The Devil >"))
-         (longest-line (apply #'max (mapcar #'length banner))))
-    (put-text-property
-     (point)
-     (dolist (line banner (point))
-       (insert (+doom-dashboard--center
-                +doom-dashboard--width line)
-               "\n"))
-     'face 'doom-dashboard-banner)))
+;;; https://github.com/Schievel1/doom-emacs-splash/blob/main/svg/doom/doomEmacsTokyoNight.svg
+(setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
+;; (defun memnoc-doom-banner ()
+;;   (let* ((banner '("                _       _"
+;;                    "               ( \\     / )"
+;;                    "            __  \\ \\   / /  __"
+;;                    "           /  \\  \\ \\ / /  /  \\"
+;;                    "          / /\\ \\  \\ V /  / /\\ \\"
+;;                    "          \\_\\ \\_\\  \\_/  /_/ /_/"
+;;                    ""
+;;                    "   ███╗   ███╗███████╗███╗   ███╗███╗   ██╗ ██████╗  ██████╗"
+;;                    "   ████╗ ████║██╔════╝████╗ ████║████╗  ██║██╔═══██╗██╔════╝"
+;;                    "   ██╔████╔██║█████╗  ██╔████╔██║██╔██╗ ██║██║   ██║██║     "
+;;                    "   ██║╚██╔╝██║██╔══╝  ██║╚██╔╝██║██║╚████║██║   ██║██║     "
+;;                    "   ██║ ╚═╝ ██║███████╗██║ ╚═╝ ██║██║ ╚███║╚██████╔╝╚██████╗"
+;;                    "   ╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚══╝ ╚═════╝  ╚═════╝"
+;;                    ""
+;;                    "                    < The Devil >"))
+;;          (longest-line (apply #'max (mapcar #'length banner))))
+;;     (put-text-property
+;;      (point)
+;;      (dolist (line banner (point))
+;;        (insert (+doom-dashboard--center
+;;                 +doom-dashboard--width line)
+;;                "\n"))
+;;      'face 'doom-dashboard-banner)))
 
-(setq +doom-dashboard-ascii-banner-fn #'memnoc-doom-banner)
+;; (setq +doom-dashboard-ascii-banner-fn #'memnoc-doom-banner)
 
 ;;; Appearance
 (setq doom-font (font-spec :family "JetBrains Mono" :size 15))
