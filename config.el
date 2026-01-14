@@ -61,7 +61,7 @@
 (custom-set-faces!
   ;; '(region :background "#524f67" :foreground "#e0def4")
   ;; Iris (purple) selection
-  '(region :background "#c4a7e7" :foreground "#191724")
+  ;; '(region :background "#c4a7e7" :foreground "#191724")
 
   ;; Pine (teal) selection
   ;; '(region :background "#31748f" :foreground "#e0def4")
@@ -70,15 +70,15 @@
   ;; '(region :background "#ebbcba" :foreground "#191724")
 
   ;; Subtle overlay
-  ;; '(region :background "#26233a" :foreground "#e0def4")
+  '(region :background "#26233a" :foreground "#e0def4")
   )
 
 ;;; Org
 (setq org-directory "~/org/")
 
 ;;; Keybindings
-(map! "C-s" #'save-buffer)                ;; save
-(map! :leader "e" #'+neotree/open)        ;; file tree
+;; (map! "C-s" #'save-buffer)                ;; save
+(map! "C-s" (cmd! (evil-normal-state) (save-buffer)))    ;; save
 (map! :leader "9" #'+vterm/toggle)        ;; floating terminal
 (map! :leader "q q" #'save-all-and-quit)  ;; save and quit
 (map! "C-h" #'evil-window-left
@@ -95,14 +95,8 @@
       :n "L" #'+workspace/switch-right)
 (map! :n "H" #'previous-buffer
       :n "L" #'next-buffer)
-
-;;; Neotree
-(after! neotree
-  (map! :map neotree-mode-map
-        "a" #'neotree-create-node
-        "d" #'neotree-delete-node
-        "r" #'neotree-rename-node
-        "<backspace>" #'neotree-select-up-node))
+(map! :n "q" #'evil-window-delete
+      :n "Q" #'evil-record-macro)
 
 ;;; Functions
 (defun save-all-and-quit ()
@@ -118,3 +112,54 @@
     ((executable-find "niri") (load! "machines/arch-niri"))
     ((executable-find "bspc") (load! "machines/arch-bspwm"))
     ((file-exists-p "/etc/pop-os/os-release") (load! "machines/popos")))))
+
+;;; C Utilities
+;;;
+;;;Seamlessly compile
+(defun compile-c-file ()
+  (interactive)
+  (let* ((src (buffer-file-name))
+         (default-name (file-name-sans-extension (file-name-nondirectory src)))
+         (out-name (read-string (format "Output name [%s]: " default-name) nil nil default-name)))
+    (compile (format "gcc -Wall -Wextra -g -o %s %s && ./%s" out-name src out-name))))
+
+(map! :leader "c r" #'compile-c-file)
+
+;;;Seamlessly run
+(defun run-c-binary ()
+  (interactive)
+  (let* ((default-name (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
+         (bin-name (read-string (format "Binary to run [%s]: " default-name) nil nil default-name)))
+    (async-shell-command (format "./%s" bin-name))))
+
+(map! :leader "c x" #'run-c-binary)
+
+;;;Run with arguments
+(defun run-c-binary-with-args ()
+  (interactive)
+  (let* ((default-name (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
+         (bin-name (read-string (format "Binary [%s]: " default-name) nil nil default-name))
+         (args (read-string "Arguments: ")))
+    (async-shell-command (format "./%s %s" bin-name args))))
+
+(map! :leader "c X" #'run-c-binary-with-args)
+
+;;;Vertico
+;;;
+;;;Split from search
+(map! :map vertico-map
+      "C-o" #'embark-act)
+
+;;;Neotree
+;;;
+;;;Split from tree
+(map! :leader "e" #'+neotree/open)
+
+(after! neotree
+  (map! :map neotree-mode-map
+        :n "a" #'neotree-create-node
+        :n "d" #'neotree-delete-node
+        :n "r" #'neotree-rename-node
+        :n "-" (cmd! (neo-open-file-horizontal-split (neo-buffer--get-filename-current-line) nil))
+        :n "v" (cmd! (neo-open-file-vertical-split (neo-buffer--get-filename-current-line) nil))
+        "<backspace>" #'neotree-select-up-node))
