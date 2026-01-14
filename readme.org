@@ -6,7 +6,7 @@
 
 ** System Packages
 #+begin_src bash
-sudo pacman -S ttf-nerd-fonts-symbols shellcheck ttf-jetbrains-mono
+sudo pacman -S ttf-nerd-fonts-symbols shellcheck ttf-jetbrains-mono clang
 #+end_src
 
 ** Shell Configuration
@@ -30,6 +30,8 @@ make install
 ├── init.el
 ├── config.el
 ├── packages.el
+├── images/
+│   └── banner.svg
 ├── themes/
 │   └── doom-rose-pine-theme.el
 └── machines/
@@ -42,45 +44,53 @@ make install
 * Keybindings
 
 ** General
-| Keybinding | Action              |
-|------------+---------------------|
-| C-s        | Save buffer         |
-| SPC e      | Open neotree        |
-| SPC 9      | Toggle terminal     |
-| SPC q q    | Save all and quit   |
+| Keybinding | Action                        |
+|------------+-------------------------------|
+| C-s        | Exit insert mode + save       |
+| SPC e      | Open neotree                  |
+| SPC 9      | Toggle terminal               |
+| SPC q q    | Save all and quit             |
+| q          | Close window                  |
+| Q          | Record macro                  |
 
 ** Window Navigation
-| Keybinding   | Action               |
-|--------------+----------------------|
-| C-h          | Window left          |
-| C-j          | Window down          |
-| C-k          | Window up            |
-| C-l          | Window right         |
-| SPC w v      | Vertical split       |
-| SPC w s      | Horizontal split     |
-| SPC w d      | Close window         |
+| Keybinding | Action           |
+|------------+------------------|
+| C-h        | Window left      |
+| C-j        | Window down      |
+| C-k        | Window up        |
+| C-l        | Window right     |
+| SPC w v    | Vertical split   |
+| SPC w s    | Horizontal split |
+| SPC w d    | Close window     |
 
-** Workspace/Buffer
+** Buffer Navigation
 | Keybinding | Action                  |
 |------------+-------------------------|
-| H          | Switch workspace left   |
-| L          | Switch workspace right  |
+| H          | Previous buffer         |
+| L          | Next buffer             |
 | SPC b b    | Switch buffer           |
 | SPC b d    | Kill buffer             |
 | SPC ,      | Switch buffer (project) |
 
 ** Code/LSP
-| Keybinding | Action            |
-|------------+-------------------|
-| SPC c a    | Code actions      |
-| SPC c q    | Quick fix         |
-| SPC c r    | Rewrite           |
-| SPC c o    | Organize imports  |
-| SPC c f    | Format buffer     |
-| SPC t f    | Toggle format     |
-| SPC d x    | Show diagnostics  |
-| ] e        | Next error        |
-| [ e        | Previous error    |
+| Keybinding | Action           |
+|------------+------------------|
+| SPC c a    | Code actions     |
+| SPC c q    | Quick fix        |
+| SPC c o    | Organize imports |
+| SPC c f    | Format buffer    |
+| SPC t f    | Toggle format    |
+| SPC d x    | Show diagnostics |
+| ] e        | Next error       |
+| [ e        | Previous error   |
+
+** C Development
+| Keybinding | Action                 |
+|------------+------------------------|
+| SPC c r    | Compile and run C file |
+| SPC c x    | Run C binary           |
+| SPC c X    | Run C binary with args |
 
 ** File Navigation
 | Keybinding | Action               |
@@ -91,14 +101,24 @@ make install
 | SPC p p    | Switch project       |
 
 ** Neotree (inside neotree)
-| Key | Action                |
-|-----+-----------------------|
-| a   | Create file/directory |
-| d   | Delete                |
-| r   | Rename                |
-| U   | Go up directory       |
-| RET | Open file             |
-| q   | Close neotree         |
+| Key         | Action           |
+|-------------+------------------|
+| a           | Create file/dir  |
+| d           | Delete           |
+| r           | Rename           |
+| -           | Horizontal split |
+| v           | Vertical split   |
+| U           | Go up directory  |
+| <backspace> | Go up directory  |
+| RET         | Open file        |
+| q           | Close neotree    |
+
+** Vertico (search/completion)
+| Keybinding | Action            |
+|------------+-------------------|
+| C-o        | Embark actions    |
+| C-s        | Open in h-split   |
+| C-v        | Open in v-split   |
 
 * Config Sections
 
@@ -110,13 +130,15 @@ Git/email identity. Leave commented if using global git config.
 #+end_src
 
 ** Banner
-Custom ASCII art dashboard with devil horns and MEMNOC text.
+SVG splash image or custom ASCII art with devil horns and MEMNOC text.
 
 ** Appearance
 - Font: JetBrains Mono 15pt
 - Theme: doom-rose-pine
 - Line numbers: enabled
-- Window dividers: rose accent (#eb6f92)
+- Window dividers: muted (#524f67)
+- Selection highlight: subtle overlay (#26233a)
+- Yank flash: rose accent (#eb6f92)
 
 ** Org
 Org directory set to =~/org/=.
@@ -128,27 +150,35 @@ Automatically loads machine-specific config from =~/.config/doom/machines/= base
 - Arch + BSPWM: =arch-bspwm.el=
 - Pop!_OS: =popos.el=
 
+Note: Machine-specific files should NOT contain the OS detection code (only =config.el= should).
+
 * init.el Modules
 
 ** Completion
-- corfu
+- corfu +orderless
 - vertico
 
 ** UI
 - doom
 - doom-dashboard
 - neotree
-- tabs
 - workspaces
 - smooth-scroll
-- vc-gutter
+- vc-gutter +pretty
+- modeline
+- hl-todo
+- ophints
+- popup +defaults
+- vi-tilde-fringe
 
 ** Editor
 - evil +everywhere
 - format +onsave
 - multiple-cursors
 - snippets
-- whitespace
+- whitespace +guess +trim
+- file-templates
+- fold
 
 ** Terminal
 - vterm
@@ -159,6 +189,8 @@ Automatically loads machine-specific config from =~/.config/doom/machines/= base
 - magit
 - tree-sitter
 - pdf
+- eval +overlay
+- lookup
 
 ** Languages
 - cc +lsp
@@ -166,12 +198,21 @@ Automatically loads machine-specific config from =~/.config/doom/machines/= base
 - haskell +lsp
 - emacs-lisp
 - common-lisp
+- racket
+- scheme +guile
 - org
 - markdown
 - json
 - lua
 - sh
 - web
+
+* Packages (packages.el)
+
+#+begin_src elisp
+(package! tldr)
+(package! evil-goggles)
+#+end_src
 
 * Maintenance
 
@@ -182,9 +223,28 @@ doom sync
 Then restart Emacs.
 
 ** Useful Commands
-| Command        | Action                    |
-|----------------+---------------------------|
-| doom sync      | Sync config and packages  |
-| doom upgrade   | Update Doom and packages  |
-| doom doctor    | Diagnose issues           |
-| doom env       | Snapshot shell env        |
+| Command      | Action                   |
+|--------------+--------------------------|
+| doom sync    | Sync config and packages |
+| doom upgrade | Update Doom and packages |
+| doom doctor  | Diagnose issues          |
+| doom env     | Snapshot shell env       |
+
+** Troubleshooting
+If Emacs opens blank or hangs:
+#+begin_src bash
+emacs --debug-init
+#+end_src
+
+To reset cache:
+#+begin_src bash
+rm -rf ~/.config/emacs/.local/state
+doom sync
+#+end_src
+
+To restore from git:
+#+begin_src bash
+cd ~/.config/doom
+git checkout config.el
+doom sync
+#+end_src
