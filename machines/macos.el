@@ -81,11 +81,3 @@
   (save-some-buffers t)
   (kill-emacs))
 
-;;; Detect OS and load the proper config
-(pcase system-type
-  ('darwin (load! "machines/macos"))
-  ('gnu/linux
-   (cond
-    ((executable-find "niri") (load! "machines/arch-niri"))
-    ((executable-find "bspc") (load! "machines/arch-bspwm"))
-    ((file-exists-p "/etc/pop-os/os-release") (load! "machines/popos")))))
