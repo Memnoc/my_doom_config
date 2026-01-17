@@ -6,7 +6,7 @@
 
 ;;; Banner
 ;;; https://github.com/Schievel1/doom-emacs-splash/blob/main/svg/doom/doomEmacsTokyoNight.svg
-(setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
+;; (setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
 ;; (defun memnoc-doom-banner ()
 ;;   (let* ((banner '("                _       _"
 ;;                    "               ( \\     / )"
@@ -105,13 +105,13 @@
   (kill-emacs))
 
 ;;; Detect OS and load the proper config
-(pcase system-type
-  ('darwin (load! "machines/macos"))
-  ('gnu/linux
-   (cond
-    ((executable-find "niri") (load! "machines/arch-niri"))
-    ((executable-find "bspc") (load! "machines/arch-bspwm"))
-    ((file-exists-p "/etc/pop-os/os-release") (load! "machines/popos")))))
+                                        ; (pcase system-type
+                                        ;   ('darwin (load! "machines/macos"))
+                                        ;   ('gnu/linux
+                                        ;    (cond
+                                        ;     ((executable-find "niri") (load! "machines/arch-niri"))
+                                        ;     ((executable-find "bspc") (load! "machines/arch-bspwm"))
+                                        ;     ((file-exists-p "/etc/pop-os/os-release") (load! "machines/popos")))))
 
 ;;; C Utilities
 ;;;
