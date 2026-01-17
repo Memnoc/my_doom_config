@@ -9,9 +9,6 @@
 # Install Emacs with native comp and pgtk (Wayland)
 yay -S emacs-wayland
 
-# Install Emacs on BSPW
-sudo pacman -S emacs
-
 # Dependencies
 sudo pacman -S ripgrep fd shellcheck ttf-jetbrains-mono ttf-nerd-fonts-symbols clang cmake libtool libvterm
 
@@ -64,6 +61,200 @@ emacs --version
 #+end_src
 
 Desktop entry is provided by =emacs-wayland= package.
+
+* Arch Linux + BSPWM (X11)
+
+** Install Everything
+#+begin_src bash
+# Install Emacs (X11, no Wayland needed)
+sudo pacman -S emacs
+
+# Dependencies
+sudo pacman -S ripgrep fd shellcheck ttf-jetbrains-mono ttf-nerd-fonts-symbols clang cmake libtool libvterm
+
+# Clone Doom
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+
+# Clone personal config
+git clone git@github.com:Memnoc/my_doom_config.git ~/.config/doom
+
+# Remove conflicting configs
+rm -f ~/.emacs
+rm -rf ~/.emacs.d
+#+end_src
+
+** Add Doom to PATH
+Add to =~/.zshrc=:
+#+begin_src bash
+export PATH="$HOME/.config/emacs/bin:$PATH"
+#+end_src
+
+Source it:
+#+begin_src bash
+source ~/.zshrc
+#+end_src
+
+** Run Doom Install
+#+begin_src bash
+doom install
+#+end_src
+
+When prompted:
+- Generate envvar file? *Yes*
+
+** Install Rose Pine Theme
+#+begin_src bash
+cd /tmp
+git clone https://github.com/donniebreve/rose-pine-doom-emacs.git
+cd rose-pine-doom-emacs
+make install
+#+end_src
+
+** Final Sync
+#+begin_src bash
+doom sync
+#+end_src
+
+* macOS (Apple Silicon)
+
+** Install Homebrew
+If not already installed:
+#+begin_src bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#+end_src
+
+Add to PATH:
+#+begin_src bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+source ~/.zshrc
+#+end_src
+
+** Install Emacs
+Using =emacs-mac= (better macOS integration, version 29):
+#+begin_src bash
+brew tap railwaycat/emacsmacport
+brew install emacs-mac --with-modules --with-native-comp
+ln -s /opt/homebrew/opt/emacs-mac/Emacs.app /Applications/Emacs.app
+#+end_src
+
+Note: This takes 15-30 minutes to compile.
+
+*** Alternative: Emacs 30 with emacs-plus
+If you need version 30:
+#+begin_src bash
+brew tap d12frosted/emacs-plus
+brew install emacs-plus@30 --with-native-comp
+ln -s /opt/homebrew/opt/emacs-plus@30/Emacs.app /Applications/Emacs.app
+#+end_src
+
+** Install Dependencies
+#+begin_src bash
+brew install ripgrep fd shellcheck cmake libtool
+#+end_src
+
+** Install Fonts
+#+begin_src bash
+brew install font-jetbrains-mono font-symbols-only-nerd-font
+#+end_src
+
+** Clone Doom
+#+begin_src bash
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+#+end_src
+
+** Clone Personal Config
+#+begin_src bash
+git clone git@github.com:Memnoc/my_doom_config.git ~/.config/doom
+#+end_src
+
+** Remove Conflicting Configs
+#+begin_src bash
+rm -f ~/.emacs
+rm -rf ~/.emacs.d
+#+end_src
+
+** Add Doom to PATH
+#+begin_src bash
+echo 'export PATH="$HOME/.config/emacs/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+#+end_src
+
+** Run Doom Install
+#+begin_src bash
+doom install
+#+end_src
+
+When prompted:
+- Generate envvar file? *Yes*
+
+** Install Rose Pine Theme
+#+begin_src bash
+cd /tmp
+git clone https://github.com/donniebreve/rose-pine-doom-emacs.git
+cd rose-pine-doom-emacs
+make install
+#+end_src
+
+** Create Machine-Specific Config
+Check your hostname:
+#+begin_src bash
+hostname
+#+end_src
+
+Create machine file (replace =macbook= with your actual hostname):
+#+begin_src bash
+cat > ~/.config/doom/machines/macbook.el << 'EOF'
+;;; machines/macbook.el -*- lexical-binding: t; -*-
+;;; macOS specific configuration
+
+;; Disable smooth scroll (causes slowness on macOS)
+(pixel-scroll-precision-mode -1)
+EOF
+#+end_src
+
+** Final Sync
+#+begin_src bash
+doom sync
+#+end_src
+
+** Verify
+#+begin_src bash
+emacs --version
+emacs --batch --eval '(print (native-comp-available-p))'
+#+end_src
+
+Should return =t= for native compilation.
+
+Launch from Applications folder or Spotlight.
+
+** macOS Troubleshooting
+
+*** No Application Icon After Install
+If symlink wasn't created:
+#+begin_src bash
+ls /opt/homebrew/opt/ | grep emacs
+#+end_src
+
+Then symlink the correct path:
+#+begin_src bash
+ln -s /opt/homebrew/opt/emacs-mac/Emacs.app /Applications/Emacs.app
+#+end_src
+
+Refresh Spotlight:
+#+begin_src bash
+sudo mdutil -E /Applications
+#+end_src
+
+*** UI Feels Slow
+Check if background compilation is running:
+#+begin_src bash
+ps aux | grep eln
+#+end_src
+
+If not, disable smooth scroll in machine config (see above).
+
+*** Intel Mac Paths
+Replace =/opt/homebrew/= with =/usr/local/= for Intel Macs.
 
 * Pop!_OS
 
@@ -212,6 +403,38 @@ make -j$(nproc)
 sudo make install
 #+end_src
 
+* Machine-Specific Configuration
+
+Machine files override shared config for specific hosts. Uses hostname for detection.
+
+** Check Your Hostname
+#+begin_src bash
+hostname
+#+end_src
+
+** File Location
+=~/.config/doom/machines/<hostname>.el=
+
+** Loading Mechanism (in config.el)
+#+begin_src elisp
+;;; Machine-specific config
+(let ((machine-file (concat doom-user-dir "machines/" (system-name) ".el")))
+  (when (file-exists-p machine-file)
+    (load! machine-file doom-user-dir)))
+#+end_src
+
+** Example: macOS (disable smooth scroll)
+#+begin_src elisp
+;;; machines/macbook.el -*- lexical-binding: t; -*-
+(pixel-scroll-precision-mode -1)
+#+end_src
+
+** Example: BSPWM (larger fonts)
+#+begin_src elisp
+;;; machines/minis350.el -*- lexical-binding: t; -*-
+(setq doom-font (font-spec :family "JetBrains Mono" :size 18))
+#+end_src
+
 * Post-Installation (All Systems)
 
 ** Install Language Servers
@@ -223,6 +446,9 @@ sudo pacman -S clang
 
 # Pop!_OS
 sudo apt install clang clangd
+
+# macOS
+brew install llvm
 #+end_src
 
 For TypeScript/JavaScript:
@@ -284,6 +510,9 @@ sudo pacman -S cmake libtool libvterm
 
 # Pop!_OS
 sudo apt install cmake libtool libtool-bin libvterm-dev
+
+# macOS
+brew install cmake libtool
 #+end_src
 
 Then rebuild:
@@ -331,9 +560,11 @@ source ~/.zshrc
 * Notes
 
 ** System Differences
-| Feature        | Arch + Niri           | Pop!_OS                |
-|----------------+-----------------------+------------------------|
-| Emacs install  | =yay -S emacs-wayland=  | Build from source      |
-| fd package     | =fd=                    | =fd-find=                |
-| vterm deps     | =libvterm=              | =libvterm-dev=           |
-| Desktop entry  | Automatic             | Automatic (from build) |
+| Feature        | Arch + Niri             | Arch + BSPWM    | macOS                  | Pop!_OS                |
+|----------------+-------------------------+-----------------+------------------------+------------------------|
+| Emacs install  | =yay -S emacs-wayland=  | =pacman -S emacs= | =brew install emacs-mac= | Build from source      |
+| Emacs version  | Latest                  | Latest          | 29 (or 30 with plus)   | 30                     |
+| fd package     | =fd=                    | =fd=            | =fd=                   | =fd-find=              |
+| vterm deps     | =libvterm=              | =libvterm=      | Automatic              | =libvterm-dev=         |
+| Desktop entry  | Automatic               | Automatic       | Symlink to /Applications | Automatic (from build) |
+| Smooth scroll  | Works                   | Works           | Disable (slow)         | Works                  |
