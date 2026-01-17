@@ -163,3 +163,9 @@
         :n "-" (cmd! (neo-open-file-horizontal-split (neo-buffer--get-filename-current-line) nil))
         :n "v" (cmd! (neo-open-file-vertical-split (neo-buffer--get-filename-current-line) nil))
         "<backspace>" #'neotree-select-up-node))
+
+
+;;; Machine-specific config (end of config.el)
+(let ((machine-file (concat doom-user-dir "machines/" (system-name) ".el")))
+  (when (file-exists-p machine-file)
+    (load! machine-file doom-user-dir)))
