@@ -1,0 +1,168 @@
+#+TITLE: Doom Emacs Installation - Pop!_OS
+#+AUTHOR: Memnoc
+#+DESCRIPTION: Installation steps for Doom Emacs on Pop!_OS
+
+* Prerequisites
+
+** Install Homebrew (for latest Emacs)
+Pop!_OS apt repositories have outdated Emacs. Use Homebrew for version 30+:
+#+begin_src bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#+end_src
+
+Add Homebrew to PATH (add to =~/.bashrc= or =~/.zshrc=):
+#+begin_src bash
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+#+end_src
+
+Source it:
+#+begin_src bash
+source ~/.bashrc
+#+end_src
+
+** Install Emacs 30 via Homebrew
+#+begin_src bash
+brew install emacs
+#+end_src
+
+Verify version:
+#+begin_src bash
+emacs --version
+#+end_src
+
+** Install System Dependencies via apt
+#+begin_src bash
+sudo apt install ripgrep fd-find shellcheck
+#+end_src
+
+Note: On Debian/Ubuntu-based systems, =fd= is named =fd-find=. Doom handles this automatically.
+
+** Install Fonts
+#+begin_src bash
+sudo apt install fonts-jetbrains-mono
+#+end_src
+
+For nerd font symbols:
+#+begin_src bash
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/NerdFontsSymbolsOnly.zip
+unzip NerdFontsSymbolsOnly.zip
+rm NerdFontsSymbolsOnly.zip
+fc-cache -fv
+#+end_src
+
+* Installation
+
+** Clone Doom Emacs
+#+begin_src bash
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+#+end_src
+
+** Clone Personal Config
+#+begin_src bash
+git clone git@github.com:Memnoc/my_doom_config.git ~/.config/doom
+#+end_src
+
+** Add Doom to PATH
+Add to =~/.bashrc= or =~/.zshrc=:
+#+begin_src bash
+export PATH="$HOME/.config/emacs/bin:$PATH"
+#+end_src
+
+Source it:
+#+begin_src bash
+source ~/.bashrc
+#+end_src
+
+** Run Doom Install
+#+begin_src bash
+doom install
+#+end_src
+
+When prompted:
+- Generate envvar file? *Yes*
+- Install fonts? *Yes* (if prompted)
+
+** Install Rose Pine Theme
+#+begin_src bash
+cd /tmp
+git clone https://github.com/donniebreve/rose-pine-doom-emacs.git
+cd rose-pine-doom-emacs
+make install
+#+end_src
+
+** Create Machine-Specific Config
+If =~/.config/doom/machines/popos.el= doesn't exist:
+#+begin_src bash
+touch ~/.config/doom/machines/popos.el
+#+end_src
+
+Add any Pop!_OS-specific settings to this file.
+
+** Final Sync
+#+begin_src bash
+doom sync
+#+end_src
+
+* Post-Installation
+
+** Install Language Servers
+For C/C++:
+#+begin_src bash
+sudo apt install clang clangd
+#+end_src
+
+For TypeScript/JavaScript:
+#+begin_src bash
+npm install -g typescript typescript-language-server
+#+end_src
+
+** Verify Installation
+#+begin_src bash
+doom doctor
+#+end_src
+
+Fix any warnings that appear.
+
+** Regenerate Envvars
+Run this whenever you add new tools to PATH:
+#+begin_src bash
+doom env
+#+end_src
+
+* Troubleshooting
+
+** Emacs Opens Blank
+#+begin_src bash
+emacs --debug-init
+#+end_src
+
+** Reset Cache
+#+begin_src bash
+rm -rf ~/.config/emacs/.local/state
+doom sync
+#+end_src
+
+** fd-find Not Found
+Doom should handle this, but if not, create a symlink:
+#+begin_src bash
+sudo ln -s $(which fdfind) /usr/local/bin/fd
+#+end_src
+
+** Fonts Not Rendering
+Rebuild font cache:
+#+begin_src bash
+fc-cache -fv
+#+end_src
+
+Then restart Emacs.
+
+* Maintenance
+
+| Command      | Action                   |
+|--------------+--------------------------|
+| doom sync    | Sync config and packages |
+| doom upgrade | Update Doom and packages |
+| doom doctor  | Diagnose issues          |
+| doom env     | Snapshot shell env       |
