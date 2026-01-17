@@ -1,94 +1,30 @@
-#+TITLE: Doom Emacs Installation - Pop!_OS
+#+TITLE: Doom Emacs Installation Guide
 #+AUTHOR: Memnoc
-#+DESCRIPTION: Installation steps for Doom Emacs on Pop!_OS
+#+DESCRIPTION: Installation steps for Doom Emacs across different systems
 
-* Prerequisites
+* Arch Linux + Niri (Wayland)
 
-** Install System Dependencies
+** Install Everything
 #+begin_src bash
-sudo apt install ripgrep fd-find shellcheck git
-#+end_src
+# Install Emacs with native comp and pgtk (Wayland)
+yay -S emacs-wayland
 
-** Install Build Dependencies for Emacs 30
-#+begin_src bash
-sudo apt install build-essential libgtk-3-dev libgnutls28-dev libtiff5-dev libgif-dev libjpeg-dev libpng-dev libxpm-dev libncurses-dev texinfo libjansson-dev libharfbuzz-dev libsqlite3-dev libwebkit2gtk-4.1-dev libtree-sitter-dev autoconf librsvg2-dev
-#+end_src
+# Dependencies
+sudo pacman -S ripgrep fd shellcheck ttf-jetbrains-mono ttf-nerd-fonts-symbols clang cmake libtool libvterm
 
-** Install vterm Dependencies
-#+begin_src bash
-sudo apt install cmake libtool libtool-bin libvterm-dev
-#+end_src
-
-** Install Fonts
-#+begin_src bash
-sudo apt install fonts-jetbrains-mono
-#+end_src
-
-For nerd font symbols:
-#+begin_src bash
-mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts
-curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/NerdFontsSymbolsOnly.zip
-unzip NerdFontsSymbolsOnly.zip
-rm NerdFontsSymbolsOnly.zip
-fc-cache -fv
-#+end_src
-
-* Installation Methods That Did NOT Work
-
-** Homebrew (GUI issues)
-Homebrew installs a terminal-only Emacs by default. Desktop entries don't work properly due to environment/tty issues.
-
-** Flatpak (sandboxing issues)
-Flatpak sandboxes Emacs, preventing access to =~/.config/emacs= and =~/.config/doom=. Even with filesystem overrides, Doom config doesn't load properly.
-
-** Snap
-Requires separate installation. Not tested.
-
-** PPA
-=ppa:kelleyk/emacs= may not have Emacs 30.
-
-* Installation Method That Works: Build from Source
-
-** Build Emacs 30
-#+begin_src bash
-cd /tmp
-git clone --depth 1 --branch emacs-30 https://git.savannah.gnu.org/git/emacs.git emacs-30
-cd emacs-30
-./autogen.sh
-./configure --with-native-compilation --with-json --with-tree-sitter --with-pgtk --with-rsvg
-make -j$(nproc)
-sudo make install
-#+end_src
-
-This installs to =/usr/local/bin/emacs= and creates a desktop entry automatically.
-
-** Verify Installation
-#+begin_src bash
-which emacs
-emacs --version
-#+end_src
-
-Should show =/usr/local/bin/emacs= and version 30.x.
-
-** Clone Doom Emacs
-#+begin_src bash
+# Clone Doom
 git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
-#+end_src
 
-** Clone Personal Config
-#+begin_src bash
+# Clone personal config
 git clone git@github.com:Memnoc/my_doom_config.git ~/.config/doom
-#+end_src
 
-** Remove Conflicting Configs
-#+begin_src bash
+# Remove conflicting configs
 rm -f ~/.emacs
 rm -rf ~/.emacs.d
 #+end_src
 
 ** Add Doom to PATH
-Add to =~/.zshrc= or =~/.bashrc=:
+Add to =~/.zshrc=:
 #+begin_src bash
 export PATH="$HOME/.config/emacs/bin:$PATH"
 #+end_src
@@ -114,23 +50,175 @@ cd rose-pine-doom-emacs
 make install
 #+end_src
 
-** Create Machine-Specific Config
+** Final Sync
+#+begin_src bash
+doom sync
+#+end_src
+
+** Verify
+#+begin_src bash
+emacs --version
+#+end_src
+
+Desktop entry is provided by =emacs-wayland= package.
+
+* Pop!_OS
+
+** Prerequisites
+
+*** Install System Dependencies
+#+begin_src bash
+sudo apt install ripgrep fd-find shellcheck git
+#+end_src
+
+*** Install Build Dependencies for Emacs 30
+#+begin_src bash
+sudo apt install build-essential libgtk-3-dev libgnutls28-dev libtiff5-dev libgif-dev libjpeg-dev libpng-dev libxpm-dev libncurses-dev texinfo libjansson-dev libharfbuzz-dev libsqlite3-dev libwebkit2gtk-4.1-dev libtree-sitter-dev autoconf librsvg2-dev
+#+end_src
+
+*** Install vterm Dependencies
+#+begin_src bash
+sudo apt install cmake libtool libtool-bin libvterm-dev
+#+end_src
+
+*** Install Fonts
+#+begin_src bash
+sudo apt install fonts-jetbrains-mono
+#+end_src
+
+For nerd font symbols:
+#+begin_src bash
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/NerdFontsSymbolsOnly.zip
+unzip NerdFontsSymbolsOnly.zip
+rm NerdFontsSymbolsOnly.zip
+fc-cache -fv
+#+end_src
+
+** Installation Methods That Did NOT Work
+
+*** Homebrew (GUI issues)
+Homebrew installs a terminal-only Emacs by default. Desktop entries don't work properly due to environment/tty issues.
+
+*** Flatpak (sandboxing issues)
+Flatpak sandboxes Emacs, preventing access to =~/.config/emacs= and =~/.config/doom=. Even with filesystem overrides, Doom config doesn't load properly.
+
+*** Snap
+Requires separate installation. Not tested.
+
+*** PPA
+=ppa:kelleyk/emacs= may not have Emacs 30.
+
+** Installation Method That Works: Build from Source
+
+*** Build Emacs 30
+#+begin_src bash
+cd /tmp
+git clone --depth 1 --branch emacs-30 https://git.savannah.gnu.org/git/emacs.git emacs-30
+cd emacs-30
+./autogen.sh
+./configure --with-native-compilation --with-json --with-tree-sitter --with-pgtk --with-rsvg
+make -j$(nproc)
+sudo make install
+#+end_src
+
+This installs to =/usr/local/bin/emacs= and creates a desktop entry automatically.
+
+*** Verify Installation
+#+begin_src bash
+which emacs
+emacs --version
+#+end_src
+
+Should show =/usr/local/bin/emacs= and version 30.x.
+
+*** Clone Doom Emacs
+#+begin_src bash
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+#+end_src
+
+*** Clone Personal Config
+#+begin_src bash
+git clone git@github.com:Memnoc/my_doom_config.git ~/.config/doom
+#+end_src
+
+*** Remove Conflicting Configs
+#+begin_src bash
+rm -f ~/.emacs
+rm -rf ~/.emacs.d
+#+end_src
+
+*** Add Doom to PATH
+Add to =~/.zshrc= or =~/.bashrc=:
+#+begin_src bash
+export PATH="$HOME/.config/emacs/bin:$PATH"
+#+end_src
+
+Source it:
+#+begin_src bash
+source ~/.zshrc
+#+end_src
+
+*** Run Doom Install
+#+begin_src bash
+doom install
+#+end_src
+
+When prompted:
+- Generate envvar file? *Yes*
+
+*** Install Rose Pine Theme
+#+begin_src bash
+cd /tmp
+git clone https://github.com/donniebreve/rose-pine-doom-emacs.git
+cd rose-pine-doom-emacs
+make install
+#+end_src
+
+*** Create Machine-Specific Config
 #+begin_src bash
 echo ';;; machines/popos.el -*- lexical-binding: t; -*-' > ~/.config/doom/machines/popos.el
 echo '' >> ~/.config/doom/machines/popos.el
 echo ';;; Pop!_OS specific configuration' >> ~/.config/doom/machines/popos.el
 #+end_src
 
-** Final Sync
+*** Final Sync
 #+begin_src bash
 doom sync
 #+end_src
 
-* Post-Installation
+** Clean Up Old Desktop Entries
+If you tried other installation methods:
+#+begin_src bash
+flatpak uninstall org.gnu.emacs 2>/dev/null
+rm -f ~/.local/share/applications/emacs*.desktop
+sudo update-desktop-database /usr/local/share/applications
+update-desktop-database ~/.local/share/applications
+#+end_src
+
+Log out and back in to refresh application menu.
+
+** Update Emacs (rebuild from source)
+#+begin_src bash
+cd /tmp/emacs-30
+git pull
+make clean
+./configure --with-native-compilation --with-json --with-tree-sitter --with-pgtk --with-rsvg
+make -j$(nproc)
+sudo make install
+#+end_src
+
+* Post-Installation (All Systems)
 
 ** Install Language Servers
+
 For C/C++:
 #+begin_src bash
+# Arch
+sudo pacman -S clang
+
+# Pop!_OS
 sudo apt install clang clangd
 #+end_src
 
@@ -152,39 +240,25 @@ Run this whenever you add new tools to PATH:
 doom env
 #+end_src
 
-* Clean Up Old Desktop Entries
-
-If you tried other installation methods:
-#+begin_src bash
-flatpak uninstall org.gnu.emacs 2>/dev/null
-rm -f ~/.local/share/applications/emacs*.desktop
-sudo update-desktop-database /usr/local/share/applications
-update-desktop-database ~/.local/share/applications
-#+end_src
-
-Log out and back in to refresh application menu.
-
-* Updating
+* Maintenance
 
 ** Update Doom and Packages
 #+begin_src bash
 doom upgrade
 #+end_src
 
-** Update Emacs (rebuild from source)
-#+begin_src bash
-cd /tmp/emacs-30
-git pull
-make clean
-./configure --with-native-compilation --with-json --with-tree-sitter --with-pgtk --with-rsvg
-make -j$(nproc)
-sudo make install
-#+end_src
-
 ** After Config Changes
 #+begin_src bash
 doom sync
 #+end_src
+
+** Useful Commands
+| Command      | Action                   |
+|--------------+--------------------------|
+| doom sync    | Sync config and packages |
+| doom upgrade | Update Doom and packages |
+| doom doctor  | Diagnose issues          |
+| doom env     | Snapshot shell env       |
 
 * Troubleshooting
 
@@ -202,6 +276,10 @@ doom install
 ** vterm Fails to Compile
 Install dependencies:
 #+begin_src bash
+# Arch
+sudo pacman -S cmake libtool libvterm
+
+# Pop!_OS
 sudo apt install cmake libtool libtool-bin libvterm-dev
 #+end_src
 
@@ -218,7 +296,7 @@ Check SVG support:
 emacs --batch --eval '(print (image-type-available-p (quote svg)))'
 #+end_src
 
-If =nil=, rebuild Emacs with =librsvg2-dev= installed and =--with-rsvg= flag.
+If =nil=, rebuild Emacs with SVG support (Pop!_OS) or install =librsvg= (Arch).
 
 ** "Invalid image specification" Error
 Either SVG support missing or image file not found. Check:
@@ -231,8 +309,7 @@ Comment out in =config.el= to bypass:
 ;; (setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
 #+end_src
 
-** fd-find Not Found
-Doom should handle this, but if not:
+** fd-find Not Found (Pop!_OS)
 #+begin_src bash
 sudo ln -s $(which fdfind) /usr/local/bin/fd
 #+end_src
@@ -250,15 +327,10 @@ source ~/.zshrc
 
 * Notes
 
-** Pop!_OS vs Arch Differences
-- vterm opens vertically by default on Pop!_OS (works as expected)
-- Emacs must be built from source to get version 30 with GUI support
-- =fd= package is named =fd-find= on Debian-based systems
-
-** Useful Commands
-| Command      | Action                   |
-|--------------+--------------------------|
-| doom sync    | Sync config and packages |
-| doom upgrade | Update Doom and packages |
-| doom doctor  | Diagnose issues          |
-| doom env     | Snapshot shell env       |
+** System Differences
+| Feature        | Arch + Niri           | Pop!_OS                |
+|----------------+-----------------------+------------------------|
+| Emacs install  | =yay -S emacs-wayland=  | Build from source      |
+| fd package     | =fd=                    | =fd-find=                |
+| vterm deps     | =libvterm=              | =libvterm-dev=           |
+| Desktop entry  | Automatic             | Automatic (from build) |
