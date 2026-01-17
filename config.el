@@ -6,7 +6,7 @@
 
 ;;; Banner
 ;;; https://github.com/Schievel1/doom-emacs-splash/blob/main/svg/doom/doomEmacsTokyoNight.svg
-;; (setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
+(setq fancy-splash-image (concat doom-user-dir "images/banner.svg"))
 ;; (defun memnoc-doom-banner ()
 ;;   (let* ((banner '("                _       _"
 ;;                    "               ( \\     / )"
