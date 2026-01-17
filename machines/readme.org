@@ -9,6 +9,9 @@
 # Install Emacs with native comp and pgtk (Wayland)
 yay -S emacs-wayland
 
+# Install Emacs on BSPW
+sudo pacman -S emacs
+
 # Dependencies
 sudo pacman -S ripgrep fd shellcheck ttf-jetbrains-mono ttf-nerd-fonts-symbols clang cmake libtool libvterm
 
